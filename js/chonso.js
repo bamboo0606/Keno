@@ -2,7 +2,7 @@
    TRANG "CHỌN SỐ" — chọn số theo kỳ lịch sử / kỳ hiện tại
    ========================================================= */
 let csTab = 'lichsu';
-let csRange = 20;
+let csRange = 10;
 let pickedHist = [];
 let pickedLive = [];
 
@@ -15,34 +15,15 @@ document.querySelectorAll('.subtab').forEach(t=>{
     document.getElementById('cs-hientai').style.display = csTab==='hientai' ? 'block':'none';
   });
 });
-document.querySelectorAll('#csRangePills .pill').forEach(p=>{
-  p.addEventListener('click',()=>{
-    document.querySelectorAll('#csRangePills .pill').forEach(x=>x.classList.remove('active'));
-    p.classList.add('active');
-    csRange = +p.dataset.csrange;
-    renderChonSoHist();
-  });
-});
-
-function lookupPeriod(){
-  const list = document.getElementById('csLookupResult');
-  const hint = document.getElementById('csLookupHint');
-  const n = parseInt(document.getElementById('csLookupInput').value, 10);
-  if(!n || n<1){
-    hint.innerHTML = '<p class="hint">Nhập số kỳ muốn tra cứu (VD: 20).</p>';
-    list.innerHTML = '';
-    return;
-  }
-  hint.innerHTML = '';
-  const items = periods.slice(0, n);
-  list.innerHTML = items.map(p=>`
-    <li>
-      <span class="code">${p.code} ${fmtTime(p.date)}</span>
-      <span class="tags">
-        <span class="tag ${p.size==='Lớn'?'tag-big':p.size==='Nhỏ'?'tag-small':'tag-tie'}">${p.size}</span>
-        <span class="tag ${p.parity==='Chẵn'?'tag-parity-even':p.parity==='Lẻ'?'tag-parity-odd':'tag-parity-tie'}">${p.parity}</span>
-      </span>
-    </li>`).join('');
+function onCsRangeSelectChange(){
+  csRange = +document.getElementById('csRangeSelect').value;
+  renderChonSoHist();
+}
+function onCsRangeCustomConfirm(){
+  const n = parseInt(document.getElementById('csRangeCustomInput').value, 10);
+  if(!n || n<1) return;
+  csRange = n;
+  renderChonSoHist();
 }
 
 function toggleNumber(arr, n, cap){
@@ -124,7 +105,6 @@ function renderChonSoHist(){
   grid.innerHTML = html;
   renderPlayTypes(document.getElementById('csPlayHist'), playTypeStats(0), false);
   renderPickedArea('Hist', freq, pickedHist, 10);
-  lookupPeriod();
 }
 function renderChonSoLive(){
   document.getElementById('csCurCode').textContent = 'Kỳ '+currentPeriod.code;

@@ -52,12 +52,12 @@
     <div class="card">
       <div class="filter-row">
         <select class="filter-select" id="recentRangeSelect" onchange="renderRecent()">
-          <option value="8">8 kỳ gần nhất</option>
+          <option value="10">10 kỳ gần nhất</option>
           <option value="20">20 kỳ gần nhất</option>
           <option value="50">50 kỳ gần nhất</option>
           <option value="120">120 kỳ gần nhất</option>
         </select>
-        <input class="filter-input" id="recentSearch" placeholder="Tra cứu theo mã kỳ…" oninput="renderRecent()">
+        <input class="filter-input" id="recentSearch" placeholder="Nhập mã kỳ quay để kiểm tra" oninput="renderRecent()">
       </div>
       <h2 style="margin-top:10px">Kỳ gần đây</h2>
       <ul class="recent-list" id="recentList"></ul>
@@ -166,23 +166,22 @@
     <div id="cs-lichsu">
       <div class="card">
         <h2>Phạm vi kỳ quay</h2>
-        <div class="range-select" id="csRangePills">
-          <div class="pill" data-csrange="10">10 kỳ</div>
-          <div class="pill active" data-csrange="20">20 kỳ</div>
-          <div class="pill" data-csrange="30">30 kỳ</div>
-          <div class="pill" data-csrange="50">50 kỳ</div>
-          <div class="pill" data-csrange="100">100 kỳ</div>
-        </div>
-        <p class="muted" style="font-size:11.5px;margin:10px 0 0">Đổi phạm vi để cập nhật số lần xuất hiện và màu sắc bên dưới.</p>
-
-        <div class="divider"></div>
-        <h2>Tra cứu số kỳ quay</h2>
         <div class="filter-row">
-          <input class="filter-input" id="csLookupInput" type="number" min="1" inputmode="numeric" placeholder="Nhập số kỳ, VD: 20" value="5">
-          <button class="btn btn-outline" onclick="lookupPeriod()">Tra cứu</button>
+          <select class="filter-select" id="csRangeSelect" onchange="onCsRangeSelectChange()">
+            <option value="10">10 kỳ gần nhất</option>
+            <option value="20">20 kỳ gần nhất</option>
+            <option value="30">30 kỳ gần nhất</option>
+            <option value="40">40 kỳ gần nhất</option>
+            <option value="50">50 kỳ gần nhất</option>
+            <option value="60">60 kỳ gần nhất</option>
+            <option value="70">70 kỳ gần nhất</option>
+            <option value="80">80 kỳ gần nhất</option>
+            <option value="90">90 kỳ gần nhất</option>
+            <option value="100">100 kỳ gần nhất</option>
+          </select>
+          <input class="filter-input" id="csRangeCustomInput" type="number" min="1" inputmode="numeric" placeholder="Hoặc nhập số kỳ tùy chọn" onkeydown="if(event.key==='Enter')onCsRangeCustomConfirm()">
+          <button class="btn btn-outline" onclick="onCsRangeCustomConfirm()">Xác nhận</button>
         </div>
-        <div id="csLookupHint"></div>
-        <ul class="recent-list" id="csLookupResult"></ul>
       </div>
 
       <div class="card">
@@ -354,13 +353,13 @@
     <div class="crumb">Trang chủ / Thông tin</div>
 
     <div class="guide-gallery" id="infoGallery">
-      <figure id="infoImg1"><img src="img/guide-1.jpg" alt="Hình 1" loading="lazy"><figcaption>Hình 1</figcaption></figure>
-      <figure><img src="img/guide-2.jpg" alt="Hình 2" loading="lazy"><figcaption>Hình 2</figcaption></figure>
-      <figure><img src="img/guide-3.jpg" alt="Hình 3" loading="lazy"><figcaption>Hình 3</figcaption></figure>
-      <figure><img src="img/guide-4.jpg" alt="Hình 4" loading="lazy"><figcaption>Hình 4</figcaption></figure>
-      <figure><img src="img/guide-5.jpg" alt="Hình 5" loading="lazy"><figcaption>Hình 5</figcaption></figure>
-      <figure><img src="img/guide-6.jpg" alt="Hình 6" loading="lazy"><figcaption>Hình 6</figcaption></figure>
-      <figure><img src="img/guide-7.jpg" alt="Hình 7" loading="lazy"><figcaption>Hình 7</figcaption></figure>
+      <figure id="infoImg1"><img src="img/guide-1.jpg" alt="Hình 1" loading="lazy"></figure>
+      <figure><img src="img/guide-2.jpg" alt="Hình 2" loading="lazy"></figure>
+      <figure><img src="img/guide-3.jpg" alt="Hình 3" loading="lazy"></figure>
+      <figure><img src="img/guide-4.jpg" alt="Hình 4" loading="lazy"></figure>
+      <figure><img src="img/guide-5.jpg" alt="Hình 5" loading="lazy"></figure>
+      <figure><img src="img/guide-6.jpg" alt="Hình 6" loading="lazy"></figure>
+      <figure><img src="img/guide-7.jpg" alt="Hình 7" loading="lazy"></figure>
     </div>
 
     <div class="card">

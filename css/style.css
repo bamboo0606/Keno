@@ -178,7 +178,6 @@ h1.page-title{font-size:21px;margin:2px 0 4px;font-weight:800;}
 .subtab.active{background:var(--red);color:#fff;box-shadow:0 4px 10px rgba(245,118,14,.28);}
 .subtab2{flex:1;text-align:center;font-size:12.5px;font-weight:700;padding:9px 6px;border-radius:999px;cursor:pointer;color:var(--red-dark);}
 .subtab2.active{background:var(--red);color:#fff;box-shadow:0 4px 10px rgba(245,118,14,.28);}
-.range-select{display:flex;gap:6px;flex-wrap:wrap;}
 .playtype{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px dashed var(--line-soft);}
 .playtype:last-child{border-bottom:none;}
 .pt-name{font-size:12.5px;font-weight:600;width:128px;flex:none;line-height:1.3;}
@@ -279,7 +278,6 @@ h1.page-title{font-size:21px;margin:2px 0 4px;font-weight:800;}
 .guide-gallery{display:flex;flex-direction:column;gap:14px;margin-bottom:14px;}
 .guide-gallery img{width:100%;border-radius:var(--radius-md);display:block;box-shadow:var(--shadow-card);}
 .guide-gallery figure{margin:0;}
-.guide-gallery figcaption{font-size:11.5px;font-weight:700;color:var(--ink-soft);text-align:center;margin-top:6px;}
 .promo-card{background:linear-gradient(135deg,#fff8f0,#fff);border:1px solid var(--line);border-radius:var(--radius-md);padding:14px;margin-bottom:12px;}
 .promo-card b{display:block;font-size:13.5px;margin-bottom:4px;color:var(--red-dark);}
 .promo-card span{font-size:12px;color:var(--ink-soft);line-height:1.5;}
