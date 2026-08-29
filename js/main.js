@@ -13,4 +13,4 @@ tickOnline();
 initCtaScroll();
 for(let i=0;i<4;i++) pushChat();
 tickChat();
-go('ketqua');
+go('thong-tin');

@@ -23,8 +23,8 @@ function renderRecent(){
     <li>
       <span class="code">${p.code} ${fmtTime(p.date)}</span>
       <span class="tags">
-        <span class="tag ${p.size==='Lớn'?'tag-big':'tag-small'}">${p.size}</span>
-        <span class="tag ${p.parity==='Chẵn'?'tag-even':p.parity==='Lẻ'?'tag-odd':'tag-tie'}">${p.parity}</span>
+        <span class="tag ${p.size==='Lớn'?'tag-big':p.size==='Nhỏ'?'tag-small':'tag-tie'}">${p.size}</span>
+        <span class="tag ${p.parity==='Chẵn'?'tag-parity-even':p.parity==='Lẻ'?'tag-parity-odd':'tag-parity-tie'}">${p.parity}</span>
       </span>
     </li>`).join('') : '<li class="muted" style="justify-content:center;border-bottom:none">Không tìm thấy kỳ phù hợp.</li>';
 }
@@ -32,13 +32,13 @@ function renderRecent(){
 function freqInRange(range){
   const slice = periods.slice(0, range);
   const freq = {}; for(let i=1;i<=80;i++)freq[i]=0;
-  let small=0,big=0,even=0,odd=0,tie=0;
+  let small=0,big=0,sizeTie=0,even=0,odd=0,tie=0;
   slice.forEach(p=>{
     p.nums.forEach(n=>freq[n]++);
-    if(p.size==='Nhỏ')small++;else big++;
+    if(p.size==='Nhỏ')small++;else if(p.size==='Lớn')big++;else sizeTie++;
     if(p.parity==='Chẵn')even++;else if(p.parity==='Lẻ')odd++;else tie++;
   });
-  return {freq, small, big, even, odd, tie, count:slice.length};
+  return {freq, small, big, sizeTie, even, odd, tie, count:slice.length};
 }
 let statRange = 50;
 function onStatRangeChange(){
@@ -46,9 +46,10 @@ function onStatRangeChange(){
   renderStats();
 }
 function renderStats(){
-  const {freq, small, big, even, odd, tie} = freqInRange(statRange);
+  const {freq, small, big, sizeTie, even, odd, tie} = freqInRange(statRange);
   document.getElementById('stSmall').textContent = small+' kỳ';
   document.getElementById('stBig').textContent = big+' kỳ';
+  document.getElementById('stSizeTie').textContent = sizeTie+' kỳ';
   document.getElementById('stEven').textContent = even+' kỳ';
   document.getElementById('stOdd').textContent = odd+' kỳ';
   document.getElementById('stTie').textContent = tie+' kỳ';

@@ -24,6 +24,27 @@ document.querySelectorAll('#csRangePills .pill').forEach(p=>{
   });
 });
 
+function lookupPeriod(){
+  const list = document.getElementById('csLookupResult');
+  const hint = document.getElementById('csLookupHint');
+  const n = parseInt(document.getElementById('csLookupInput').value, 10);
+  if(!n || n<1){
+    hint.innerHTML = '<p class="hint">Nhập số kỳ muốn tra cứu (VD: 20).</p>';
+    list.innerHTML = '';
+    return;
+  }
+  hint.innerHTML = '';
+  const items = periods.slice(0, n);
+  list.innerHTML = items.map(p=>`
+    <li>
+      <span class="code">${p.code} ${fmtTime(p.date)}</span>
+      <span class="tags">
+        <span class="tag ${p.size==='Lớn'?'tag-big':p.size==='Nhỏ'?'tag-small':'tag-tie'}">${p.size}</span>
+        <span class="tag ${p.parity==='Chẵn'?'tag-parity-even':p.parity==='Lẻ'?'tag-parity-odd':'tag-parity-tie'}">${p.parity}</span>
+      </span>
+    </li>`).join('');
+}
+
 function toggleNumber(arr, n, cap){
   const idx = arr.indexOf(n);
   if(idx>=0){arr.splice(idx,1); return true;}
@@ -103,6 +124,7 @@ function renderChonSoHist(){
   grid.innerHTML = html;
   renderPlayTypes(document.getElementById('csPlayHist'), playTypeStats(0), false);
   renderPickedArea('Hist', freq, pickedHist, 10);
+  lookupPeriod();
 }
 function renderChonSoLive(){
   document.getElementById('csCurCode').textContent = 'Kỳ '+currentPeriod.code;

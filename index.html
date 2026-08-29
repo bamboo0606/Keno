@@ -80,10 +80,11 @@
         </select>
       </div>
 
-      <div class="section-h">Lớn / Nhỏ</div>
+      <div class="section-h">Lớn / Nhỏ / Hòa</div>
       <div class="stat-row" style="margin-bottom:14px">
         <div class="stat-chip"><b id="stSmall">0</b><span>Nhỏ</span></div>
         <div class="stat-chip"><b id="stBig">0</b><span>Lớn</span></div>
+        <div class="stat-chip"><b id="stSizeTie">0</b><span>Hòa</span></div>
       </div>
 
       <div class="section-h">Chẵn / Lẻ / Hòa</div>
@@ -173,6 +174,15 @@
           <div class="pill" data-csrange="100">100 kỳ</div>
         </div>
         <p class="muted" style="font-size:11.5px;margin:10px 0 0">Đổi phạm vi để cập nhật số lần xuất hiện và màu sắc bên dưới.</p>
+
+        <div class="divider"></div>
+        <h2>Tra cứu số kỳ quay</h2>
+        <div class="filter-row">
+          <input class="filter-input" id="csLookupInput" type="number" min="1" inputmode="numeric" placeholder="Nhập số kỳ, VD: 20" value="5">
+          <button class="btn btn-outline" onclick="lookupPeriod()">Tra cứu</button>
+        </div>
+        <div id="csLookupHint"></div>
+        <ul class="recent-list" id="csLookupResult"></ul>
       </div>
 
       <div class="card">
@@ -305,7 +315,10 @@
 
         <div id="sellerKiemTra" style="display:none">
           <div class="formfield"><label>Mã voucher khách đưa</label><input id="codeInput" placeholder="VD: KENO-AB12C"></div>
-          <button class="btn btn-lg" style="width:100%;background:#fff;border:1.5px solid var(--red);color:var(--red)" onclick="checkCode()">Kiểm tra mã</button>
+          <div class="filter-row">
+            <button class="btn btn-lg" style="flex:1;background:#fff;border:1.5px solid var(--red);color:var(--red)" onclick="checkCode()">Kiểm tra mã</button>
+            <button class="btn btn-lg btn-outline" style="flex:1" onclick="openQrScan()">📷 Quét QR</button>
+          </div>
           <div class="state-msg" id="codeMsg"></div>
           <button class="btn btn-primary btn-lg" style="width:100%;margin-top:10px;display:none" id="confirmBtn" onclick="confirmCode()">✅ Xác nhận &amp; hoàn tất</button>
         </div>
@@ -339,7 +352,16 @@
   <!-- ===================== VIEW: THÔNG TIN ===================== -->
   <section class="view" id="view-thong-tin">
     <div class="crumb">Trang chủ / Thông tin</div>
-    <h1 class="page-title">Thông tin</h1>
+
+    <div class="guide-gallery" id="infoGallery">
+      <figure id="infoImg1"><img src="img/guide-1.jpg" alt="Hình 1" loading="lazy"><figcaption>Hình 1</figcaption></figure>
+      <figure><img src="img/guide-2.jpg" alt="Hình 2" loading="lazy"><figcaption>Hình 2</figcaption></figure>
+      <figure><img src="img/guide-3.jpg" alt="Hình 3" loading="lazy"><figcaption>Hình 3</figcaption></figure>
+      <figure><img src="img/guide-4.jpg" alt="Hình 4" loading="lazy"><figcaption>Hình 4</figcaption></figure>
+      <figure><img src="img/guide-5.jpg" alt="Hình 5" loading="lazy"><figcaption>Hình 5</figcaption></figure>
+      <figure><img src="img/guide-6.jpg" alt="Hình 6" loading="lazy"><figcaption>Hình 6</figcaption></figure>
+      <figure><img src="img/guide-7.jpg" alt="Hình 7" loading="lazy"><figcaption>Hình 7</figcaption></figure>
+    </div>
 
     <div class="card">
       <ul class="info-nav">
@@ -354,14 +376,15 @@
   <section class="view" id="view-thongtin-huongdan">
     <div class="crumb">Trang chủ / Thông tin / Hướng dẫn cách chơi</div>
     <h1 class="page-title">Hướng dẫn cách chơi</h1>
-    <div class="guide-gallery">
-      <img src="img/guide-1.jpg" alt="Hướng dẫn cách chơi Keno - hình 1" loading="lazy">
-      <img src="img/guide-2.jpg" alt="Hướng dẫn cách chơi Keno - hình 2" loading="lazy">
-      <img src="img/guide-3.jpg" alt="Hướng dẫn cách chơi Keno - hình 3" loading="lazy">
-      <img src="img/guide-4.jpg" alt="Hướng dẫn cách chơi Keno - hình 4" loading="lazy">
-      <img src="img/guide-5.jpg" alt="Hướng dẫn cách chơi Keno - hình 5" loading="lazy">
-      <img src="img/guide-6.jpg" alt="Hướng dẫn cách chơi Keno - hình 6" loading="lazy">
+    <div class="card">
+      <p style="font-size:12.5px;line-height:1.6;color:var(--ink-soft);margin:0 0 10px">KENO là một hình thức xổ số tự chọn số quay số nhanh do Vietlott phát hành, chính thức ra mắt vào ngày 23/08/2019.</p>
+      <p style="font-size:12.5px;line-height:1.6;color:var(--ink-soft);margin:0 0 10px">KENO được phát hành từ 06:08 đến 21:52 từ thứ Hai đến Chủ Nhật hàng tuần. Tần suất quay số mở thưởng là 8 phút/kỳ, bán vé liên tục trong thời gian của mỗi kỳ.</p>
+      <p style="font-size:12.5px;line-height:1.6;color:var(--ink-soft);margin:0">Trường hợp Vietlott Online thay đổi thời gian phát hành/lịch quay số, Vietlott sẽ thông báo chậm nhất 05 ngày trước ngày thay đổi.</p>
     </div>
+    <a class="video-embed" href="https://www.youtube.com/watch?v=jfDh0y1qIN4" target="_blank" rel="noopener noreferrer" aria-label="Xem video Hướng dẫn cách chơi Keno trên YouTube">
+      <img src="https://img.youtube.com/vi/jfDh0y1qIN4/hqdefault.jpg" alt="Hướng dẫn cách chơi Keno" loading="lazy">
+      <span class="video-play-btn">▶</span>
+    </a>
   </section>
 
   <!-- ===================== VIEW: CƠ CẤU GIẢI THƯỞNG ===================== -->
@@ -383,7 +406,7 @@
     </div>
     <div class="promo-card">
       <b>🎫 Nhận mã trải nghiệm tại điểm bán</b>
-      <span>Ưu đãi 30.000₫ cho xổ số Keno khi mua tại điểm bán hàng — lưu mã tại mục "Điểm bán" và xuất trình mã/QR để đổi.</span>
+      <span>Ưu đãi 100.000₫ cho xổ số Keno khi mua tại điểm bán hàng — lưu mã tại mục "Điểm bán" và xuất trình mã/QR để đổi.</span>
     </div>
   </section>
 
@@ -406,7 +429,6 @@
     </div>
     <p>Tra cứu kết quả · Cộng đồng · Điểm bán gần bạn</p>
     <p>Chơi có trách nhiệm.</p>
-    <p class="resp">18+ · Bản demo giao diện — không phải kênh phát hành/bán vé chính thức.</p>
   </div>
 
   <!-- ===================== BOTTOM NAV ===================== -->
@@ -426,14 +448,27 @@
   <div class="voucher-modal">
     <button class="vm-close" onclick="closeVoucherModal()">✕</button>
     <div class="vm-badge">🎁 Ưu đãi điểm bán</div>
-    <div class="vm-amount">30.000₫</div>
-    <div class="vm-desc">Ưu đãi 30.000 cho xổ số Keno khi mua tại điểm bán hàng.</div>
+    <div class="vm-amount">100.000₫</div>
+    <div class="vm-desc">Ưu đãi 100.000 cho xổ số Keno khi mua tại điểm bán hàng.</div>
     <div class="vm-timer" id="vmTimer">10</div>
     <div class="vm-timer-label">giây để lưu mã</div>
     <button class="btn btn-primary btn-lg" style="width:100%" id="vmSaveBtn" onclick="saveVoucher()">LƯU MÃ NGAY</button>
   </div>
 </div>
 
+<div class="modal-overlay hidden" id="qrScanModal">
+  <div class="voucher-modal">
+    <button class="vm-close" onclick="closeQrScan()">✕</button>
+    <div class="vm-badge">📷 Quét mã QR</div>
+    <div class="qr-scan-video-wrap">
+      <video id="qrScanVideo" autoplay playsinline muted></video>
+    </div>
+    <p class="hint" id="qrScanHint">Đưa mã QR vào giữa khung hình.</p>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
 <script src="js/data.js"></script>
 <script src="js/router.js"></script>
 <script src="js/result.js"></script>

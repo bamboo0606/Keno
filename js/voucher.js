@@ -49,37 +49,31 @@ function voucherStatus(v){
   if(new Date() > v.expiresAt) return 'expired';
   return 'unused';
 }
-function drawFakeQR(canvas, text){
-  const size = 15, cell = 6;
-  canvas.width = size*cell; canvas.height = size*cell;
+function drawQR(canvas, text){
+  const qr = qrcode(0, 'M');
+  qr.addData(text);
+  qr.make();
+  const count = qr.getModuleCount();
+  const cell = Math.max(1, Math.floor(canvas.width / count));
+  canvas.width = count*cell; canvas.height = count*cell;
   const ctx = canvas.getContext('2d');
   ctx.fillStyle = '#fff'; ctx.fillRect(0,0,canvas.width,canvas.height);
-  let seed = 0; for(let i=0;i<text.length;i++) seed = (seed*31 + text.charCodeAt(i))>>>0;
-  function rand(){ seed = (seed*1103515245 + 12345) >>> 0; return (seed>>>8) / 16777216; }
   ctx.fillStyle = '#241315';
-  for(let y=0;y<size;y++){
-    for(let x=0;x<size;x++){
-      const inFinder = (x<7&&y<7) || (x>=size-7&&y<7) || (x<7&&y>=size-7);
-      if(inFinder){
-        const lx = x<7?x:x-(size-7), ly = y<7?y:y-(size-7);
-        const border = lx===0||lx===6||ly===0||ly===6;
-        const innerFill = lx>=2&&lx<=4&&ly>=2&&ly<=4;
-        if(border||innerFill) ctx.fillRect(x*cell,y*cell,cell,cell);
-        continue;
-      }
-      if(rand()<0.48) ctx.fillRect(x*cell,y*cell,cell,cell);
+  for(let r=0;r<count;r++){
+    for(let c=0;c<count;c++){
+      if(qr.isDark(r,c)) ctx.fillRect(c*cell, r*cell, cell, cell);
     }
   }
 }
 function renderVoucherCard(v, idPrefix){
   const st = voucherStatus(v);
   const canvasId = 'qr-'+idPrefix+'-'+v.code;
-  setTimeout(()=>{ const c=document.getElementById(canvasId); if(c) drawFakeQR(c, v.code); },0);
+  setTimeout(()=>{ const c=document.getElementById(canvasId); if(c) drawQR(c, v.code); },0);
   return `<div class="voucher-card">
     <div class="vc-qr"><canvas id="${canvasId}" width="90" height="90"></canvas></div>
     <div class="vc-info">
       <div class="vc-code">${v.code}</div>
-      <div class="vc-desc">Ưu đãi 30.000₫ cho xổ số Keno tại điểm bán.</div>
+      <div class="vc-desc">Ưu đãi 100.000₫ cho xổ số Keno tại điểm bán.</div>
       <div class="vc-exp ${st==='expired'?'bad':'ok'}">${st==='used'?'Đã sử dụng · ':''}Hết hạn: ${fmtDateTime(v.expiresAt)}</div>
     </div>
   </div>`;
@@ -93,7 +87,7 @@ function renderVoucherList(){
 function updateUuDaiBadge(){
   const badge = document.getElementById('uuDaiBadge');
   const activeCount = vouchers.filter(v=>voucherStatus(v)==='unused').length;
-  badge.style.display = activeCount>0 ? 'flex':'none';
+  badge.style.display = activeCount>0 ? 'inline-flex':'none';
   badge.textContent = activeCount;
 }
 
@@ -107,11 +101,10 @@ document.querySelectorAll('#voucherFilterPills .pill').forEach(p=>{
   });
 });
 function renderSellerVoucherList(){
+  // Chưa kết nối dữ liệu thực tế — để trống, không hiển thị dữ liệu mẫu/placeholder.
   const box = document.getElementById('sellerVoucherList');
   if(!box) return;
-  let list = vouchers.map(v=>({...v, st:voucherStatus(v)}));
-  if(voucherFilter!=='all') list = list.filter(v=>v.st===voucherFilter);
-  box.innerHTML = list.length ? list.map(v=>renderVoucherCard(v,'s')).join('') : '<div class="voucher-empty">Không có voucher phù hợp.</div>';
+  box.innerHTML = '';
 }
 
 /* ---------- Đăng nhập điểm bán ---------- */
@@ -182,4 +175,56 @@ function confirmCode(){
   renderVoucherList();
   renderSellerVoucherList();
   updateUuDaiBadge();
+}
+
+/* ---------- Quét mã QR bằng camera ---------- */
+let qrScanStream = null;
+let qrScanRAF = null;
+function openQrScan(){
+  const modal = document.getElementById('qrScanModal');
+  const video = document.getElementById('qrScanVideo');
+  const hint = document.getElementById('qrScanHint');
+  modal.classList.remove('hidden');
+  hint.textContent = 'Đưa mã QR vào giữa khung hình.';
+  if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
+    hint.textContent = 'Trình duyệt này không hỗ trợ quét QR bằng camera. Vui lòng nhập mã thủ công.';
+    return;
+  }
+  navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } }).then(stream=>{
+    qrScanStream = stream;
+    video.srcObject = stream;
+    video.play();
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    function tick(){
+      if(!qrScanStream) return;
+      if(video.readyState === video.HAVE_ENOUGH_DATA){
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const code = jsQR(imageData.data, imageData.width, imageData.height);
+        if(code && code.data){
+          onQrDetected(code.data);
+          return;
+        }
+      }
+      qrScanRAF = requestAnimationFrame(tick);
+    }
+    qrScanRAF = requestAnimationFrame(tick);
+  }).catch(()=>{
+    hint.textContent = 'Không thể truy cập camera. Vui lòng cho phép quyền camera hoặc nhập mã thủ công.';
+  });
+}
+function closeQrScan(){
+  document.getElementById('qrScanModal').classList.add('hidden');
+  if(qrScanRAF) cancelAnimationFrame(qrScanRAF);
+  qrScanRAF = null;
+  if(qrScanStream){ qrScanStream.getTracks().forEach(t=>t.stop()); qrScanStream = null; }
+}
+function onQrDetected(text){
+  closeQrScan();
+  document.getElementById('codeInput').value = text;
+  checkCode();
+  toast('Đã quét được mã: '+text);
 }

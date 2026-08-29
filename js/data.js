@@ -12,12 +12,18 @@ function pick20(){
   }
   return out.sort((a,b)=>a-b);
 }
+/* Phân loại theo đúng luật chính thức Vietlott Keno:
+   Lớn/Nhỏ dựa trên số lượng số quay ra ở mỗi nửa dải 01–80 (không phải tổng),
+   Chẵn/Lẻ dựa trên số lượng số chẵn/lẻ quay ra. Ngưỡng 11 số trở lên mới tính
+   thắng Lớn/Nhỏ hoặc Chẵn/Lẻ; đúng 10-10 là Hòa. */
 function analyze(nums){
   const tong=nums.reduce((a,b)=>a+b,0);
-  const size=tong<=810?'Nhỏ':'Lớn';
+  const bigCt=nums.filter(n=>n>=41).length;
+  const smallCt=20-bigCt;
+  const size = bigCt>=11 ? 'Lớn' : smallCt>=11 ? 'Nhỏ' : 'Hòa';
   const evenCt=nums.filter(n=>n%2===0).length;
   const oddCt=20-evenCt;
-  const parity=evenCt>oddCt?'Chẵn':oddCt>evenCt?'Lẻ':'Hòa';
+  const parity = evenCt>=11 ? 'Chẵn' : oddCt>=11 ? 'Lẻ' : 'Hòa';
   return {tong,size,evenCt,oddCt,parity};
 }
 function fmtTime(d){return pad(d.getHours())+':'+pad(d.getMinutes());}
