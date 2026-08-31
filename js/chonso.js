@@ -71,7 +71,8 @@ function renderPickedArea(prefix, freqMap, picked, cap){
     const sorted = Object.entries(freqMap).map(([k,v])=>({n:+k,c:v,lvl:heatLevel(v,min,max)})).sort((a,b)=>b.c-a.c);
     const suggestions = sorted.filter(x=>!picked.includes(x.n)).slice(0,missing);
     suggestBox.innerHTML = `
-      <div class="suggest-head">Bạn đã chọn <b>${picked.length}</b>/${cap} số · còn thiếu <b>${missing}</b> số. Gợi ý ${suggestions.length} số ưu tiên cao nhất theo số lần xuất hiện:</div>
+      <div class="suggest-head">Bạn đã chọn <b>${picked.length}</b>/${cap} số. Chọn thêm <b>${missing}</b> số để có cơ hội trúng <b>2 tỷ đồng</b>.</div> 
+      <div class="suggest-head">Gợi ý ${suggestions.length} số ưu tiên cao nhất theo số lần xuất hiện:</div>
       <div class="suggest-chips">${suggestions.map(s=>`<span class="suggest-chip lvl${s.lvl}" title="${priorityLabel(s.lvl)} · ${s.c} lần xuất hiện" onclick="addPicked('${prefix}',${s.n})">${pad(s.n)}</span>`).join('')}</div>
       <div class="legend" style="margin-top:6px">
         <i style="background:var(--heat-5)"></i>ưu tiên rất cao

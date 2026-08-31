@@ -11,6 +11,8 @@ function renderResult(){
   document.getElementById('rsParity').textContent = classifyParity(p.evenCt);
   document.getElementById('rsEvenCt').textContent = p.evenCt;
   document.getElementById('rsOddCt').textContent = p.oddCt;
+  document.getElementById('bigCt').textContent = p.nums.filter(n=>n>=41).length;
+  document.getElementById('smallCt').textContent = 20 - p.nums.filter(n=>n>=41).length;
   renderRecent();
 }
 function renderRecent(){
